@@ -9,9 +9,8 @@ namespace _1DV402.S2.L02C
 {
     class ClockDisplay
     {
-
-        private string _hourDisplay;
-        private string _minuteDisplay;
+        private NumberDisplay _hourDisplay;
+        private NumberDisplay _minuteDisplay;
 
         private string HourDisplay
         {
@@ -21,11 +20,11 @@ namespace _1DV402.S2.L02C
              */
             get
             {
-                return _hourDisplay;
+                return _hourDisplay.Number.ToString();
             }
             set
             {
-                _hourDisplay = value;
+                _hourDisplay.Number = int.Parse(value);
             }
         }
 
@@ -37,11 +36,13 @@ namespace _1DV402.S2.L02C
              */
             get
             {
-                return _minuteDisplay;
+                // Add leading zero for string representation.
+                return String.Format("{0:00}", _minuteDisplay.Number);
             }
             set
             {
-                _minuteDisplay = value;
+                // Note: Leading zero disappears in int conversion.
+                _minuteDisplay.Number = int.Parse(value);
             }
         }
 
@@ -57,7 +58,7 @@ namespace _1DV402.S2.L02C
              */
             get
             {
-                return String.Format("{0}:{1}", _hourDisplay, _minuteDisplay);
+                return String.Format("{0}:{1}", HourDisplay, MinuteDisplay);
             }
             set
             {
@@ -74,7 +75,7 @@ namespace _1DV402.S2.L02C
                 }
                 else
                 {
-                    throw new FormatException();
+                    throw new FormatException(String.Format("Strängen '{0}' kan inte tolkas som en tid på formatet HH:mm.", value));
                 }
             }
         }
@@ -84,16 +85,15 @@ namespace _1DV402.S2.L02C
             Det innebär att fälten ska initieras med lämpliga värden.
          */
 
-        ClockDisplay() : this(0, 0)
+        public ClockDisplay() : this(0, 0)
         {
             /*
              * Standardkonstruktorn ClockDisplay() ska se till att fälten initieras så de refererar till 
                 NumberDisplay-objekt men ingen tilldelning får ske i konstruktorns kropp, som måste vara tom. 
                 Denna konstruktor måste därför anropa den konstruktor i klassen som har två parametrar
              */
-
         }
-        ClockDisplay(int hour, int minute)
+        public ClockDisplay(int hour, int minute)
         {
             /*
              * Med konstruktorn ClockDisplay(int hour, int minute) ska ett objekt initieras så att objektet 
@@ -101,16 +101,22 @@ namespace _1DV402.S2.L02C
                 som leder till att fält i klassen tilldelas värden.
              */
 
+            _hourDisplay = new NumberDisplay(23);
+            _minuteDisplay = new NumberDisplay(59);
+
             HourDisplay = hour.ToString();
             MinuteDisplay = minute.ToString();
         }
-        ClockDisplay(string time)
+        public ClockDisplay(string time)
         {
             /*
              * Med konstruktorn ClockDisplay(string time) ska ett objekt initieras så att objektet ställs på den 
                 tid som parametern, på formatet HH:mm, anger. Detta är den ena av konstruktorerna som får innehålla 
                 kod som leder till att fält i klassen tilldelas värden.
              */
+
+            _hourDisplay = new NumberDisplay(23);
+            _minuteDisplay = new NumberDisplay(59);
 
             Time = time;
         }
@@ -122,9 +128,17 @@ namespace _1DV402.S2.L02C
                 anropande instansen är lika med ett angivet objekt beträffande fälten _hourDisplay och 
                 _minuteDisplay. 
              */
-            //if(obj.)
 
-            return false;
+            ClockDisplay testObj = obj as ClockDisplay;
+
+            if (testObj == null)
+            {
+                return false;
+            }
+
+            // Check if the tested object has the same _time and _alarmTimes values as this object
+            return (this.Equals(testObj) && testObj.HourDisplay == this.HourDisplay && testObj.MinuteDisplay == this.MinuteDisplay);
+
         }
 
         public override int GetHashCode()
@@ -154,12 +168,12 @@ namespace _1DV402.S2.L02C
                     // Increase hour by one.
                     string newHour = (int.Parse(HourDisplay) + 1).ToString();
 
-                    // Assign hour value with leading zero if needed.
-                    HourDisplay = (newHour.Length == 1 ? String.Format("0{0}", newHour) : newHour);
+                    // Assign hour value
+                    HourDisplay = String.Format("{0}", newHour);
                 }
                 else
                 {
-                    HourDisplay = "00";
+                    HourDisplay = "0";
                 }
 
                 MinuteDisplay = "00";
@@ -170,7 +184,7 @@ namespace _1DV402.S2.L02C
                 string newMinute = (int.Parse(MinuteDisplay) + 1).ToString();
 
                 // Assign minute value with leading zero if needed.
-                MinuteDisplay = (newMinute.Length == 1 ? String.Format("0{0}", newMinute) : newMinute);
+                MinuteDisplay = String.Format("{0:00}", newMinute);
             }
         }
 

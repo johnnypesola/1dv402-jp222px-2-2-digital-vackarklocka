@@ -12,7 +12,6 @@ namespace _1DV402.S2.L02C
         private int _maxNumber;
         private  int _number;
 
-        [Description("The Maximum number")] 
         public int MaxNumber
         {
             /*
@@ -36,7 +35,6 @@ namespace _1DV402.S2.L02C
             }
         }
 
-        [Description("The number")] 
         public int Number
         {
             /*
@@ -52,7 +50,7 @@ namespace _1DV402.S2.L02C
             {
                 if (value < 0 || value > MaxNumber)
                 {
-                    throw new ArgumentException();
+                    throw new ArgumentException(String.Format("Värdet {0} Ligger inte inom intervallen 0 och {1}", value, MaxNumber));
                 }
                 else
                 {
@@ -65,7 +63,7 @@ namespace _1DV402.S2.L02C
          * Konstruktorerna, som är två till antalet, ska se till att ett NumberDisplay-objekt blir korrekt initierat. 
             Det innebär att fälten ska initieras med lämpliga värden 
          */
-        NumberDisplay(int maxNumber) : this(1,0)
+        public NumberDisplay(int maxNumber) : this(maxNumber,0)
         {
             /*
              * Konstruktorn NumberDisplay(int maxNumber) ska se till att fälten initieras så de refererar till 
@@ -74,7 +72,7 @@ namespace _1DV402.S2.L02C
              */
 
         }
-        NumberDisplay(int maxNumber, int number)
+        public  NumberDisplay(int maxNumber, int number)
         {
             /*
              * Med konstruktorn NumberDisplay(int maxNumber, int number) ska ett objekt initieras så att 
@@ -93,8 +91,16 @@ namespace _1DV402.S2.L02C
              */
 
 
+            NumberDisplay testObj = obj as NumberDisplay;
 
-            return false;
+            if (testObj == null)
+            {
+                return false;
+            }
+
+            // Check if the tested object has the same _time and _alarmTimes values as this object
+            return (this.Equals(testObj) && testObj.MaxNumber == this.MaxNumber && testObj.Number == this.Number);
+
         }
 
         public override int GetHashCode()
@@ -105,14 +111,7 @@ namespace _1DV402.S2.L02C
                 av fälten
              */
 
-            // Get DescriptionAttribute of MaxNumber property in this class type. (To generate hash with)
-            object maxNumberAttribute = typeof(NumberDisplay).GetProperty("MaxNumber").GetCustomAttributes(typeof(DescriptionAttribute), true)[0];
-
-            // Get text for Descriptionatritube
-            string MaxNumberDescriptionText = ((DescriptionAttribute)maxNumberAttribute).Description;
-
-            // Return hashcode
-            return MaxNumberDescriptionText.GetHashCode();
+            return (this.ToString("G") + _maxNumber.ToString()).GetHashCode(); // <----- ? 
         }
 
         public void Increment()

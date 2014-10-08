@@ -8,8 +8,8 @@ namespace _1DV402.S2.L02C
 {
     class AlarmClock
     {
-        private string[] _alarmTimes;
-        private string _time;
+        private ClockDisplay[] _alarmTimes;
+        private ClockDisplay _time;
 
         public string[] AlarmTimes 
         {
@@ -20,15 +20,34 @@ namespace _1DV402.S2.L02C
                 underliggande ClockDisplay-objekt ändras.
              * Set-metoden ska konvertera varje alarmtid, i form av en sträng, till ett ClockDisplay-objekt
              */
+
             get
             {
-                // Convert here...
-                return _alarmTimes;
+                // Declare array to return.
+                string[] returnArray = new string[_alarmTimes.Length];
+
+                // Loop through _alarmTimes and assign return array with string values of alarmtimes.
+                for (int i = 0; i < _alarmTimes.Length; i++)
+                {
+                    returnArray[i] = _alarmTimes[i].ToString();
+                }
+
+                return returnArray;
             }
             set
             {
-                // Convert here...
-                _alarmTimes = value;
+                // Declare array of ClockDisplay:s with length of delared values
+                ClockDisplay[] setArray = new ClockDisplay[value.Length];
+
+
+                // Loop to build ClockDisplay objects
+                for (int i = 0; i < value.Length; i++)
+                {
+                    setArray[i] = new ClockDisplay(value[i]);
+                }
+
+                // Set our new array filled with ClockDisplay objects.
+                _alarmTimes = setArray;
             }
         }
 
@@ -40,11 +59,11 @@ namespace _1DV402.S2.L02C
              */
             get
             {
-                return _time;
+                return _time.Time;
             }
             set
             {
-                _time = value;
+                _time.Time = value;
             }
         }
 
@@ -54,16 +73,15 @@ namespace _1DV402.S2.L02C
             innebär att fälten ska initieras med lämpliga värden
         */ 
 
-        AlarmClock() : this(0, 0)
+        public AlarmClock() : this(0, 0)
         {
             /*
              * ska initiera fälten så att de refererar till objekt. Ingen tilldelning 
                 får ske i konstruktorns kropp, som måste vara tom. Denna konstruktor måste därför anropa den 
                 konstruktor i klassen som har två parametrar.
              */
-            
         }
-        AlarmClock(int hour, int minute) : this(0, 0, 0, 0)
+        public AlarmClock(int hour, int minute) : this(hour, minute, 0, 0)
         {
             /*
              * Med konstruktorn AlarmClock(int hour, int minute) ska ett objekt kunna initieras så att 
@@ -72,7 +90,7 @@ namespace _1DV402.S2.L02C
                 konstruktor i klassen som har fyra parametrar.
              */
         }
-        AlarmClock(int hour, int minute, int alarmHour, int alarmMinute)
+        public AlarmClock(int hour, int minute, int alarmHour, int alarmMinute)
         {
             /*
              * Med konstruktorn AlarmClock(int hour, int minute , int alarmHour, int alarmMinute)
@@ -80,11 +98,15 @@ namespace _1DV402.S2.L02C
                 anger. Detta är en konstruktor som får innehålla kod som leder till att fält i klassen tilldelas värden.
              */
 
-            Time = String.Format("{0}.{1}", hour, minute);
+            _alarmTimes = new ClockDisplay[0];
+            _time = new ClockDisplay();
+
+            Time = String.Format("{0}:{1:00}", hour, minute);
+            AlarmTimes = new string[] { String.Format("{0}:{1:00}", alarmHour, alarmMinute) };
 
             // TODO set alarmtime
         }
-        AlarmClock(string time, params string[] alarmTimes)
+        public AlarmClock(string time, params string[] alarmTimes)
         {
             /*
              * Med konstruktorn AlarmClock(string time, params string[] alarmTimes) ska ett objekt kunna 
@@ -93,9 +115,11 @@ namespace _1DV402.S2.L02C
                 tilldelas värden.
              */
 
-            Time = time;
+            _alarmTimes = new ClockDisplay[0];
+            _time = new ClockDisplay();
 
-            // TODO set alarmtime
+            Time = time;
+            AlarmTimes = alarmTimes;
         }
 
         public override bool Equals(object obj)
@@ -106,9 +130,15 @@ namespace _1DV402.S2.L02C
                 aktuell tid samt alarmtider. 
              */
 
-            
+            AlarmClock testObj = obj as AlarmClock;
 
-            return false;
+            if (testObj == null)
+            {
+                return false;
+            }
+            
+            // Check if the tested object has the same _time and _alarmTimes values as this object
+            return (this.Equals(testObj) && testObj.Time == this.Time && testObj.AlarmTimes == this.AlarmTimes);
         }
 
         public override int GetHashCode()
@@ -118,10 +148,11 @@ namespace _1DV402.S2.L02C
                 beskriver det anropande objektet. Lämpligen returnerar metoden hashkoden för textbeskrivningen, 
                 d.v.s. det som metoden ToString() returnerar.
              */
-            int _returnValue;
+            // int _returnValue;
 
-            int.TryParse(this.ToString(), out _returnValue); // No catch, may throw exception.
-            return _returnValue;
+            // int.TryParse(this.ToString(), out _returnValue); // No catch, may throw exception.
+
+            return int.Parse(this.ToString());
         }
 
         public bool TickTock()
@@ -132,11 +163,18 @@ namespace _1DV402.S2.L02C
                 göras av metoden.
              */
 
-            foreach (string alarmTime in AlarmTimes)
+            // Increase time by one minute
+            _time.Increment();
+
+            // Check if its time for an alarm
+            if(AlarmTimes != null)
             {
-                if (alarmTime == Time)
+                foreach (string alarmTime in AlarmTimes)
                 {
-                    return true;
+                    if (alarmTime == Time)
+                    {
+                        return true;
+                    }
                 }
             }
 

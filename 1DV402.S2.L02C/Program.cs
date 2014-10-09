@@ -70,23 +70,26 @@ namespace _1DV402.S2.L02C
             try { new AlarmClock("12:20", "73:12", "99:42", "63:21"); }
             catch (Exception e) { ViewErrorMessage(e.Message); }
 
-            Console.WriteLine("\n");
 
+        // Custom tests
+            ViewTestHeader("Eget test.\nTestar om Equals metoderna för klasserna fungerar.");
 
-            if(aC1.Equals(aC2))
+            // Equals override method test
+            if(aC1.Equals(aC1))
             {
-                Console.WriteLine("They are the same!");
+                Console.WriteLine("Object aC1 och aC1 är samma objekt!");
             }
+            
+            if (!aC2.Equals(aC3))
+            {
+                Console.WriteLine("Object aC2 och aC3 är inte samma objekt!\n");
+            }
+
+            Console.WriteLine("\n");
         }
 
         private static void Run(AlarmClock ac, int minutes)
         {
-            /*
-             * Privat statisk metod som har två parametrar. Den första parametern är en referens till AlarmClock-objekt. 
-             * Den andra parametern är antalet minuter som AlarmClock-objektet ska gå (Vilken lämpligen görs genom att 
-             * låta ett AlarmClock-objekt göra upprepade anrop av metoder TickTock()).
-             */
-
             // Loop time
             for (int i = 0; i <= minutes; i++)
             {
@@ -108,23 +111,21 @@ namespace _1DV402.S2.L02C
 
         private static void ViewErrorMessage(string message)
         {
-            /* 
-             * Privat statisk metoden som tar ett felmeddelande som argument och presenterar det.
-             */
+            // Set styles for error message and display it
+
             Console.BackgroundColor = ConsoleColor.Red;
             Console.ForegroundColor = ConsoleColor.White;
             Console.WriteLine(message);
-            Console.ResetColor();
-            
+            Console.ResetColor();   
         }
 
         private static void ViewTestHeader(string header)
         {
-            /*
-             * Privat statisk metod som tar en sträng som argument och presenterar strängen.
-             */
+            // Set styles for test header and display it
 
+            Console.BackgroundColor = ConsoleColor.DarkBlue;
             Console.WriteLine("\n═══════════════════════════════════════════════════════════════════════════════");
+            Console.BackgroundColor = ConsoleColor.Black;
             Console.ForegroundColor = ConsoleColor.White;
             Console.WriteLine(header);
             Console.WriteLine();

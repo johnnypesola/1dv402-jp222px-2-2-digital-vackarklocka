@@ -103,8 +103,6 @@ namespace _1DV402.S2.L02C
 
             Time = String.Format("{0}:{1:00}", hour, minute);
             AlarmTimes = new string[] { String.Format("{0}:{1:00}", alarmHour, alarmMinute) };
-
-            // TODO set alarmtime
         }
         public AlarmClock(string time, params string[] alarmTimes)
         {
@@ -148,11 +146,8 @@ namespace _1DV402.S2.L02C
                 beskriver det anropande objektet. Lämpligen returnerar metoden hashkoden för textbeskrivningen, 
                 d.v.s. det som metoden ToString() returnerar.
              */
-            // int _returnValue;
 
-            // int.TryParse(this.ToString(), out _returnValue); // No catch, may throw exception.
-
-            return int.Parse(this.ToString());
+            return int.Parse(this.ToString()).GetHashCode();
         }
 
         public bool TickTock()
@@ -190,12 +185,23 @@ namespace _1DV402.S2.L02C
              */
 
 
-            return String.Format("{0} ({1})", Time, String.Join(",", AlarmTimes));
+            return String.Format("{0} ({1})", Time, String.Join(", ", AlarmTimes));
         }
 
         static public bool operator ==(AlarmClock A, AlarmClock B) // Static?
         {
-            if(A.Equals(B))
+            // If both are null, or both are same instance, return true.
+            if (System.Object.ReferenceEquals(A, B))
+            {
+                return true;
+            }
+
+            if((object) A == null || (object) B == null)
+            {
+                return false;
+            }
+
+            if (A.Time == B.Time)
             {
                 return true;
             }
@@ -204,7 +210,7 @@ namespace _1DV402.S2.L02C
 
         static public bool operator !=(AlarmClock A, AlarmClock B) // Static?
         {
-            if (!A.Equals(B))
+            if (A.Time != B.Time)
             {
                 return true;
             }

@@ -26,7 +26,7 @@ namespace _1DV402.S2.L02C
             {
                 if (value <= 0)
                 {
-                    throw new ArgumentException();
+                    throw new ArgumentException(String.Format("Det högsta värdet '{0}' måste vara högre än 0.", value));
                 }
                 else
                 {
@@ -111,7 +111,7 @@ namespace _1DV402.S2.L02C
                 av fälten
              */
 
-            return (this.ToString("G") + _maxNumber.ToString()).GetHashCode(); // <----- ? 
+            return (this.ToString("G") + MaxNumber.ToString()).GetHashCode(); // <----- ? 
         }
 
         public void Increment()
@@ -138,7 +138,7 @@ namespace _1DV402.S2.L02C
                 inleds med 0. Inga utskrifter till konsolfönstret får göras av metoden.
              */
 
-            return String.Format("{0}", Number);
+            return Number.ToString();
         }
 
         public string ToString(string format)
@@ -153,13 +153,13 @@ namespace _1DV402.S2.L02C
              * 
              */
 
-            if (format == "0" || format == "G" || format == "00" && int.Parse(format) < 10)
+            if (format == "0" || format == "G" || format == "00" && Number > 10)
             {
-                return String.Format("0{0}", Number);
+                return String.Format("{0}", Number);
             }
             else if (format == "00")
             {
-                return String.Format("{0}", Number);
+                return String.Format("{0:00}", Number); 
             }
             else 
             {
@@ -167,7 +167,7 @@ namespace _1DV402.S2.L02C
             }
         }
 
-        static public bool operator ==(NumberDisplay A, NumberDisplay B) // Static?
+        static public bool operator ==(NumberDisplay A, NumberDisplay B)
         {
             if (A.Equals(B))
             {
@@ -176,7 +176,7 @@ namespace _1DV402.S2.L02C
             return false;
         }
 
-        static public bool operator !=(NumberDisplay A, NumberDisplay B) // Static?
+        static public bool operator !=(NumberDisplay A, NumberDisplay B)
         {
             if (!A.Equals(B))
             {

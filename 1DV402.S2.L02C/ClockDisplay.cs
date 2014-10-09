@@ -37,7 +37,7 @@ namespace _1DV402.S2.L02C
             get
             {
                 // Add leading zero for string representation.
-                return String.Format("{0:00}", _minuteDisplay.Number);
+                return _minuteDisplay.Number.ToString("00");
             }
             set
             {
@@ -149,7 +149,7 @@ namespace _1DV402.S2.L02C
                 d.v.s. det som metoden ToString() returnerar.
             */
 
-            return ToString().GetHashCode(); // No catch, may throw exception.
+            return ToString().GetHashCode();
         }
 
         public void Increment()
@@ -163,28 +163,15 @@ namespace _1DV402.S2.L02C
             // Check if its time to increase hour.
             if(MinuteDisplay == "59")
             {
-                if(HourDisplay != "23")
-                {
-                    // Increase hour by one.
-                    string newHour = (int.Parse(HourDisplay) + 1).ToString();
+                // Increase or reset hour
+                HourDisplay = (HourDisplay == "23") ? "0" : (int.Parse(HourDisplay) + 1).ToString();
 
-                    // Assign hour value
-                    HourDisplay = String.Format("{0}", newHour);
-                }
-                else
-                {
-                    HourDisplay = "0";
-                }
-
-                MinuteDisplay = "00";
+                MinuteDisplay = "0";
             }
             else
             {
-                // Increase minute by one.
-                string newMinute = (int.Parse(MinuteDisplay) + 1).ToString();
-
-                // Assign minute value with leading zero if needed.
-                MinuteDisplay = String.Format("{0:00}", newMinute);
+                // Increase minute by one 
+                MinuteDisplay = (int.Parse(MinuteDisplay) + 1).ToString();
             }
         }
 

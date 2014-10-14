@@ -13,37 +13,12 @@ namespace _1DV402.S2.L02C
         private NumberDisplay _minuteDisplay;
 
     // Properties
-        private string HourDisplay
-        {
-            get
-            {
-                return _hourDisplay.Number.ToString();
-            }
-            set
-            {
-                _hourDisplay.Number = int.Parse(value);
-            }
-        }
-
-        private string MinuteDisplay
-        {
-            get
-            {
-                // Add leading zero for string representation.
-                return _minuteDisplay.Number.ToString("00");
-            }
-            set
-            {
-                // Note: Leading zero disappears in int conversion.
-                _minuteDisplay.Number = int.Parse(value);
-            }
-        }
 
         public string Time 
         {
             get
             {
-                return String.Format("{0}:{1}", HourDisplay, MinuteDisplay);
+                return String.Format("{0}:{1}", _hourDisplay.Number, _minuteDisplay.Number);
             }
             set
             {
@@ -55,8 +30,8 @@ namespace _1DV402.S2.L02C
                 {
                     string[] hourAndMinute = value.Split(':');
 
-                    HourDisplay = hourAndMinute[0];
-                    MinuteDisplay = hourAndMinute[1];
+                    _hourDisplay.Number = int.Parse(hourAndMinute[0]);
+                    _minuteDisplay.Number = int.Parse(hourAndMinute[1]);
                 }
                 else
                 {
@@ -78,8 +53,8 @@ namespace _1DV402.S2.L02C
             _hourDisplay = new NumberDisplay(23);
             _minuteDisplay = new NumberDisplay(59);
 
-            HourDisplay = hour.ToString();
-            MinuteDisplay = minute.ToString();
+            _hourDisplay.Number = hour;
+            _minuteDisplay.Number = minute;
         }
 
         public ClockDisplay(string time)
@@ -96,17 +71,17 @@ namespace _1DV402.S2.L02C
         public void Increment()
         {
             // Check if its time to increase hour by 1.
-            if (MinuteDisplay == "59")
+            if (_minuteDisplay.Number == 59)
             {
                 // Increase or reset hour
-                HourDisplay = (HourDisplay == "23") ? "0" : (int.Parse(HourDisplay) + 1).ToString();
+                _hourDisplay.Number = (_hourDisplay.Number == 23) ? 0 : (_hourDisplay.Number + 1);
 
-                MinuteDisplay = "0";
+                _minuteDisplay.Number = 0;
             }
             else
             {
                 // Increase minute by 1.
-                MinuteDisplay = (int.Parse(MinuteDisplay) + 1).ToString();
+                _minuteDisplay.Number = (_minuteDisplay.Number + 1);
             }
         }
 
@@ -123,8 +98,8 @@ namespace _1DV402.S2.L02C
 
             // Check if the tested object has the same values as this object
             return (base.Equals(testObj) &&
-                    testObj.MinuteDisplay == this.MinuteDisplay &&
-                    testObj.HourDisplay == this.HourDisplay);
+                    testObj._minuteDisplay.Number == this._minuteDisplay.Number &&
+                    testObj._hourDisplay.Number == this._hourDisplay.Number);
         }
 
         public override int GetHashCode()
